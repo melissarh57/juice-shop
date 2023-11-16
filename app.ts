@@ -7,3 +7,5 @@ require('./lib/startup/validateDependencies')().then(() => {
   const server = require('./server')
   server.start()
 })
+
+const secret = 'ksjdhJKLFHuiehjkl3287#&&*#jjkla';
