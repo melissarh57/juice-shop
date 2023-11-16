@@ -25,6 +25,7 @@ module.exports = function fileUpload () {
       if (uploadedFileType !== null && utils.startsWith(uploadedFileType.mime, 'image')) {
         const loggedInUser = security.authenticatedUsers.get(req.cookies.token)
         if (loggedInUser) {
+          // Vulnerability 1: Path Traversal
           fs.open(`frontend/dist/frontend/assets/public/images/uploads/${loggedInUser.data.id}.${uploadedFileType.ext}`, 'w', function (err, fd) {
             if (err != null) logger.warn('Error opening file: ' + err.message)
             // @ts-expect-error FIXME buffer has unexpected type
@@ -40,12 +41,14 @@ module.exports = function fileUpload () {
           }).catch((error: Error) => {
             next(error)
           })
+          // Vulnerability 2: Incomplete Error Handling
           res.location(process.env.BASE_PATH + '/profile')
           res.redirect(process.env.BASE_PATH + '/profile')
         } else {
           next(new Error('Blocked illegal activity by ' + req.socket.remoteAddress))
         }
       } else {
+        // Vulnerability 3: Insecure File Upload
         res.status(415)
         next(new Error(`Profile image upload does not accept this file type${uploadedFileType ? (': ' + uploadedFileType.mime) : '.'}`))
       }
