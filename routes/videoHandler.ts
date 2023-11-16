@@ -55,7 +55,8 @@ exports.promotionVideo = () => {
       const subs = getSubsFromFile()
 
       challengeUtils.solveIf(challenges.videoXssChallenge, () => { return utils.contains(subs, '</script><script>alert(`xss`)</script>') })
-
+      const idk = req.params;
+      console.log(idk);
       const theme = themes[config.get<string>('application.theme')]
       template = template.replace(/_title_/g, entities.encode(config.get('application.name')))
       template = template.replace(/_favicon_/g, favicon())
